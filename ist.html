@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IST · Aide au diagnostic et prise en charge (Homme & Femme)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #f0f4f8;
+            color: #1a2b3c;
+            line-height: 1.5;
+            padding: 1rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .app-container {
+            max-width: 820px;
+            width: 100%;
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px -10px rgba(0, 60, 100, 0.2);
+            overflow: hidden;
+            padding: 1.5rem 2rem 2rem;
+            margin: 1rem 0;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #0a4b7a;
+            padding-bottom: 1rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .header h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #0a4b7a;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .header .sub {
+            font-size: 0.9rem;
+            color: #3a5e7a;
+            background: #e3eef8;
+            display: inline-block;
+            padding: 0.25rem 1rem;
+            border-radius: 30px;
+            margin-top: 0.5rem;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #5d7f9c;
+            padding: 0 0.5rem;
+            gap: 0.3rem;
+            flex-wrap: wrap;
+        }
+
+        .step-indicator span.active {
+            color: #0a4b7a;
+            border-bottom: 3px solid #0a4b7a;
+            padding-bottom: 0.3rem;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            border: 1px solid #dbe7f0;
+            margin-bottom: 1.2rem;
+        }
+
+        .question-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0a3e62;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .question-title .badge {
+            background: #0a4b7a;
+            color: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .option-btn {
+            background: #f9fcff;
+            border: 2px solid #cbdde9;
+            border-radius: 1rem;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #1a3a53;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .option-btn:hover {
+            background: #e1f0fd;
+            border-color: #0a4b7a;
+            transform: translateY(-1px);
+        }
+
+        .option-btn .emoji {
+            font-size: 1.5rem;
+            min-width: 2rem;
+            text-align: center;
+        }
+
+        .result-card {
+            background: #e7f2fa;
+            border-left: 6px solid #0a4b7a;
+            border-radius: 1rem;
+            padding: 1.3rem 1.5rem;
+            margin-top: 1.2rem;
+        }
+
+        .result-card h3 {
+            font-size: 1.1rem;
+            color: #0a4b7a;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .result-card .kit {
+            background: white;
+            border-radius: 0.8rem;
+            padding: 0.9rem 1.2rem;
+            font-weight: 600;
+            color: #0a3e62;
+            margin: 0.8rem 0 0.3rem;
+            border: 1px dashed #8bb9d9;
+        }
+
+        .result-card .detail {
+            font-size: 0.9rem;
+            color: #2a4e6b;
+            margin-top: 0.5rem;
+            padding-left: 0.3rem;
+        }
+
+        .result-card .warning {
+            background: #fff3cd;
+            border-left: 4px solid #e6a700;
+            padding: 0.6rem 1rem;
+            border-radius: 0.6rem;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            color: #664d00;
+        }
+
+        .btn {
+            background: #0a4b7a;
+            color: white;
+            border: none;
+            border-radius: 2rem;
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 8px rgba(10, 75, 122, 0.2);
+        }
+
+        .btn:hover {
+            background: #083b5f;
+        }
+
+        .btn-secondary {
+            background: #e3eef8;
+            color: #0a4b7a;
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: #cbdde9;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footnote {
+            font-size: 0.75rem;
+            color: #5e7d97;
+            text-align: center;
+            margin-top: 1.5rem;
+            border-top: 1px solid #dbe7f0;
+            padding-top: 1rem;
+        }
+
+        .select-sex {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .select-sex button {
+            flex: 1;
+            padding: 1.2rem;
+            font-size: 1.2rem;
+            border-radius: 1.2rem;
+            border: 2px solid #cbdde9;
+            background: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .select-sex button.active {
+            border-color: #0a4b7a;
+            background: #e1f0fd;
+            color: #0a4b7a;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .note {
+            font-size: 0.8rem;
+            background: #f1f7fc;
+            padding: 0.8rem 1rem;
+            border-radius: 0.8rem;
+            color: #2a4e6b;
+            margin-top: 1rem;
+        }
+
+        .badge-femme {
+            background: #b53e6b;
+        }
+
+        .badge-homme {
+            background: #0a4b7a;
+        }
+
+        ul {
+            padding-left: 1.3rem;
+            margin: 0.5rem 0;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        .strong {
+            font-weight: 700;
+            color: #0a3e62;
+        }
+        .small {
+            font-size: 0.85rem;
+        }
+        .encadre {
+            background: #fdf2f6;
+            border-left: 4px solid #b53e6b;
+            padding: 0.8rem 1rem;
+            border-radius: 0.6rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container" id="app">
+    <div class="header">
+        <h1>🩺 IST · Aide au diagnostic</h1>
+        <div class="sub">Homme & Femme · Côte d'Ivoire (4ème révision, 2016)</div>
+    </div>
+
+    <!-- Étape 0 : choix du sexe -->
+    <div id="stepSexe">
+        <div class="card" style="text-align:center;">
+            <div class="question-title" style="justify-content:center;">
+                <span class="badge">1</span> Sélectionnez le profil
+            </div>
+            <p style="color:#2a4e6b; margin-bottom:1rem;">Cet outil adapte la prise en charge selon le sexe et le statut gravidique.</p>
+            <div class="select-sex">
+                <button id="btnHomme" class="active">👨 Homme</button>
+                <button id="btnFemme">👩 Femme</button>
+            </div>
+            <div id="femmeSousChoix" class="hidden" style="margin-top:1rem;">
+                <p style="font-weight:600; color:#0a3e62; margin-bottom:0.6rem;">Statut gravidique :</p>
+                <div class="select-sex" style="margin-top:0;">
+                    <button id="btnNonEnceinte" class="active">Femme non enceinte</button>
+                    <button id="btnEnceinte">Femme enceinte</button>
+                </div>
+            </div>
+            <button class="btn" id="startBtn" style="margin-top:1.2rem;">Commencer le diagnostic →</button>
+            <div class="note">Le guide national distingue les algorithmes selon le sexe, le statut gravidique et le niveau d'intervention IST.</div>
+        </div>
+    </div>
+
+    <!-- Étape 1 : choix du syndrome -->
+    <div id="stepSyndrome" class="hidden">
+        <div class="step-indicator">
+            <span class="active">1. Syndrome</span>
+            <span>2. Niveau</span>
+            <span>3. Résultat</span>
+        </div>
+        <div class="card">
+            <div class="question-title"><span class="badge">?</span> Quel est le motif de consultation ?</div>
+            <div class="options-grid" id="syndromeOptions"></div>
+            <div class="note" id="syndromeNote"></div>
+        </div>
+        <button class="btn btn-secondary" id="backToSexe" style="margin-top:0.5rem;">← Changer de profil</button>
+    </div>
+
+    <!-- Étape 2 : Niveau de soins -->
+    <div id="stepNiveau" class="hidden">
+        <div class="step-indicator">
+            <span>1. Syndrome</span>
+            <span class="active">2. Niveau</span>
+            <span>3. Résultat</span>
+        </div>
+        <div class="card">
+            <div class="question-title"><span class="badge">!</span> Niveau d'intervention IST</div>
+            <div class="options-grid" id="niveauOptions"></div>
+            <div class="note">Le niveau IST3 (spécialiste) est réservé aux échecs des niveaux précédents.</div>
+            <button class="btn btn-secondary" id="backToSyndrome" style="margin-top:1rem;">← Retour</button>
+        </div>
+    </div>
+
+    <!-- Étape 3 : Résultat -->
+    <div id="stepResult" class="hidden">
+        <div class="step-indicator">
+            <span>1. Syndrome</span>
+            <span>2. Niveau</span>
+            <span class="active">3. Résultat</span>
+        </div>
+        <div id="resultContent"></div>
+        <div class="btn-group">
+            <button class="btn btn-secondary" id="backToNiveau">← Changer de niveau</button>
+            <button class="btn btn-secondary" id="backToSyndromeFromResult">← Changer de syndrome</button>
+            <button class="btn" id="restartBtn">↻ Recommencer</button>
+        </div>
+    </div>
+
+    <div class="footnote">
+        D'après les Algorithmes de traitement des IST – 4ème révision, Ministère de la Santé et de l'Hygiène Publique, Côte d'Ivoire (Août 2016).<br>
+        Cet outil est une aide à la décision et ne remplace pas l'examen clinique.
+    </div>
+</div>
+
+<script>
+    (function() {
+        // Éléments DOM
+        const stepSexe = document.getElementById('stepSexe');
+        const stepSyndrome = document.getElementById('stepSyndrome');
+        const stepNiveau = document.getElementById('stepNiveau');
+        const stepResult = document.getElementById('stepResult');
+        const syndromeOptions = document.getElementById('syndromeOptions');
+        const niveauOptions = document.getElementById('niveauOptions');
+        const resultContent = document.getElementById('resultContent');
+        const startBtn = document.getElementById('startBtn');
+        const backToSexe = document.getElementById('backToSexe');
+        const backToSyndrome = document.getElementById('backToSyndrome');
+        const backToNiveau = document.getElementById('backToNiveau');
+        const backToSyndromeFromResult = document.getElementById('backToSyndromeFromResult');
+        const restartBtn = document.getElementById('restartBtn');
+        const femmeSousChoix = document.getElementById('femmeSousChoix');
+        const btnHomme = document.getElementById('btnHomme');
+        const btnFemme = document.getElementById('btnFemme');
+        const btnNonEnceinte = document.getElementById('btnNonEnceinte');
+        const btnEnceinte = document.getElementById('btnEnceinte');
+
+        // État
+        let currentSexe = 'homme';       // 'homme' | 'femme'
+        let currentGrossesse = 'non';     // 'non' | 'oui' (uniquement pour femme)
+        let currentSyndrome = null;
+        let currentNiveau = null;
+
+        // --- Config syndromes par profil ---
+        const syndromeConfig = {
+            homme: [
+                { key: 'ecoulement_h', label: '💧 Écoulement urétral et/ou ano-rectal', short: 'Écoulement urétral/ano-rectal' },
+                { key: 'ulceration', label: '🦠 Ulcération génitale et/ou ano-rectale et/ou bubon', short: 'Ulcération génitale/ano-rectale/bubon' },
+                { key: 'douleur_test', label: '🥜 Douleurs testiculaires', short: 'Douleurs testiculaires' },
+                { key: 'condylomes', label: '🍄 Condylomes acuminés (crêtes de coq)', short: 'Condylomes acuminés' }
+            ],
+            femme_non: [
+                { key: 'ecoulement_f_non', label: '💧 Écoulement vaginal et/ou ano-rectal', short: 'Écoulement vaginal/ano-rectal' },
+                { key: 'ulceration', label: '🦠 Ulcération génitale et/ou ano-rectale et/ou bubon', short: 'Ulcération génitale/ano-rectale/bubon' },
+                { key: 'douleur_abdo', label: '🤰 Douleur abdominale basse (femme non enceinte)', short: 'Douleur abdominale basse' },
+                { key: 'condylomes', label: '🍄 Condylomes acuminés (crêtes de coq)', short: 'Condylomes acuminés' }
+            ],
+            femme_oui: [
+                { key: 'ecoulement_f_oui', label: '💧 Écoulement vaginal et/ou ano-rectal (femme enceinte)', short: 'Écoulement vaginal (enceinte)' },
+                { key: 'ulceration', label: '🦠 Ulcération génitale et/ou ano-rectale et/ou bubon', short: 'Ulcération génitale/ano-rectale/bubon' },
+                { key: 'douleur_abdo', label: '🤰 Douleur abdominale basse (femme enceinte)', short: 'Douleur abdominale basse' },
+                { key: 'condylomes', label: '🍄 Condylomes acuminés (crêtes de coq)', short: 'Condylomes acuminés' }
+            ]
+        };
+
+        function getSyndromes() {
+            if (currentSexe === 'homme') return syndromeConfig.homme;
+            if (currentSexe === 'femme' && currentGrossesse === 'non') return syndromeConfig.femme_non;
+            return syndromeConfig.femme_oui;
+        }
+
+        // --- Navigation ---
+        function showStep(step) {
+            stepSexe.classList.add('hidden');
+            stepSyndrome.classList.add('hidden');
+            stepNiveau.classList.add('hidden');
+            stepResult.classList.add('hidden');
+            if (step === 'sexe') stepSexe.classList.remove('hidden');
+            else if (step === 'syndrome') stepSyndrome.classList.remove('hidden');
+            else if (step === 'niveau') stepNiveau.classList.remove('hidden');
+            else if (step === 'result') stepResult.classList.remove('hidden');
+        }
+
+        function renderSyndromes() {
+            const list = getSyndromes();
+            syndromeOptions.innerHTML = list.map(s =>
+                `<button class="option-btn" data-syndrome="${s.key}">
+                    <span class="emoji">${s.label.split(' ')[0]}</span> ${s.label.substring(2)}
+                </button>`
+            ).join('');
+            const note = document.getElementById('syndromeNote');
+            if (currentSexe === 'homme') note.textContent = 'Chez l\'homme, les syndromes couverts sont : écoulement urétral/ano-rectal, ulcération, douleurs testiculaires et condylomes.';
+            else note.textContent = 'Chez la femme, les syndromes couverts sont : écoulement vaginal/ano-rectal, ulcération, douleur abdominale basse et condylomes.';
+        }
+
+        function renderNiveaux() {
+            niveauOptions.innerHTML = `
+                <button class="option-btn" data-niveau="1"><span class="emoji">🏥</span> Niveau IST1 (sans laboratoire)</button>
+                <button class="option-btn" data-niveau="1med"><span class="emoji">👨‍⚕️</span> Niveau IST1 avec compétence médicale</button>
+                <button class="option-btn" data-niveau="2"><span class="emoji">🔬</span> Niveau IST2 (laboratoire)</button>
+            `;
+        }
+
+        // --- Gestion des clics profil ---
+        btnHomme.addEventListener('click', () => {
+            currentSexe = 'homme';
+            btnHomme.classList.add('active');
+            btnFemme.classList.remove('active');
+            femmeSousChoix.classList.add('hidden');
+        });
+
+        btnFemme.addEventListener('click', () => {
+            currentSexe = 'femme';
+            btnFemme.classList.add('active');
+            btnHomme.classList.remove('active');
+            femmeSousChoix.classList.remove('hidden');
+        });
+
+        btnNonEnceinte.addEventListener('click', () => {
+            currentGrossesse = 'non';
+            btnNonEnceinte.classList.add('active');
+            btnEnceinte.classList.remove('active');
+        });
+
+        btnEnceinte.addEventListener('click', () => {
+            currentGrossesse = 'oui';
+            btnEnceinte.classList.add('active');
+            btnNonEnceinte.classList.remove('active');
+        });
+
+        startBtn.addEventListener('click', () => {
+            renderSyndromes();
+            showStep('syndrome');
+        });
+
+        syndromeOptions.addEventListener('click', (e) => {
+            const btn = e.target.closest('.option-btn');
+            if (!btn) return;
+            currentSyndrome = btn.dataset.syndrome;
+            renderNiveaux();
+            showStep('niveau');
+        });
+
+        niveauOptions.addEventListener('click', (e) => {
+            const btn = e.target.closest('.option-btn');
+            if (!btn) return;
+            currentNiveau = btn.dataset.niveau;
+            renderResult();
+            showStep('result');
+        });
+
+        backToSexe.addEventListener('click', () => showStep('sexe'));
+        backToSyndrome.addEventListener('click', () => showStep('syndrome'));
+        backToNiveau.addEventListener('click', () => showStep('niveau'));
+        backToSyndromeFromResult.addEventListener('click', () => showStep('syndrome'));
+
+        restartBtn.addEventListener('click', () => {
+            currentSexe = 'homme';
+            currentGrossesse = 'non';
+            currentSyndrome = null;
+            currentNiveau = null;
+            btnHomme.classList.add('active');
+            btnFemme.classList.remove('active');
+            femmeSousChoix.classList.add('hidden');
+            btnNonEnceinte.classList.add('active');
+            btnEnceinte.classList.remove('active');
+            showStep('sexe');
+        });
+
+        // --- Rendu des résultats ---
+        function renderResult() {
+            if (!currentSyndrome || !currentNiveau) return;
+            resultContent.innerHTML = generateResultHTML(currentSyndrome, currentNiveau, currentSexe, currentGrossesse);
+        }
+
+        function generateResultHTML(syndrome, niveau, sexe, grossesse) {
+            // ================== HOMME ==================
+            if (sexe === 'homme') {
+                if (syndrome === 'ecoulement_h') {
+                    if (niveau === '1') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-homme">💧</span> Écoulement urétral et/ou ano-rectal — Homme</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1 — 1ère intention</h3>
+                                <p class="small">Traiter pour gonococcie, chlamydiose et mycoplasmose.</p>
+                                <div class="kit">Kit URET P</div>
+                                <ul class="small">
+                                    <li><span class="strong">Ceftriaxone</span> 500 mg IM : 1 injection</li>
+                                    <li><span class="strong">Azithromycine</span> 500 mg : 2 cp en prise unique orale</li>
+                                </ul>
+                                <p class="small">Revoir au 10ème jour. Traiter les partenaires.</p>
+                                <div class="warning">⚠️ Échec malgré bonne observance → référer au niveau IST1 avec compétence médicale ou IST2.</div>
+                            </div>
+                            <div class="result-card" style="border-left-color:#3a7ca5;">
+                                <h3>🔸 2ème intention (si échec)</h3>
+                                <p class="small">Traiter pour gardnerellose, trichomonose, chlamydiose et mycoplasmose.</p>
+                                <div class="kit">Kit URET S</div>
+                                <ul class="small">
+                                    <li><span class="strong">Métronidazole</span> 500 mg : 4 cp en prise unique orale</li>
+                                    <li><span class="strong">Azithromycine</span> 500 mg : 2 cp/j en une prise orale pendant 3 jours</li>
+                                </ul>
+                                <p class="small">Revoir au 24ème jour. Traiter les partenaires.</p>
+                            </div>
+                            <div class="note">Enfant &lt;15 ans : Ceftriaxone 50 mg/kg (max 250 mg) IM J1 + Érythromycine 50 mg/kg/j x7j. Échec : Métronidazole 50 mg/kg/j (1 prise) + Érythromycine 50 mg/kg/j x14j.</div>
+                        </div>`;
+                    if (niveau === '1med') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-homme">💧</span> Écoulement urétral et/ou ano-rectal — Homme</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1 avec compétence médicale</h3>
+                                <p class="small">Client référé après échec du niveau IST1.</p>
+                                <p class="small">Traiter pour gonococcie, chlamydiose, mycoplasmose, gardnerellose et trichomonose.</p>
+                                <div class="kit">Prescription</div>
+                                <ul class="small">
+                                    <li><span class="strong">Tinidazole</span> 500 mg : 4 cp en prise unique orale</li>
+                                    <li><span class="strong">Spectinomycine</span> 1 g IM : 2 g en IM dans une fesse</li>
+                                    <li><span class="strong">Azithromycine</span> 500 mg : 2 cp en prise unique orale pendant 3 jours</li>
+                                </ul>
+                                <p class="small">Revoir au 10ème jour. Traiter les partenaires.</p>
+                                <div class="warning">⚠️ Échec malgré bonne observance → référer au niveau IST3.</div>
+                            </div>
+                            <div class="note">Enfant &lt;15 ans : Azithromycine 50 mg/kg/j x3j. Échec : référer au niveau supérieur.</div>
+                        </div>`;
+                    if (niveau === '2') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-homme">💧</span> Écoulement urétral et/ou ano-rectal — Homme</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST2 — Traitement selon germe</h3>
+                                <p class="small">Examen microscopique (état frais, Gram, Giemsa). Traiter selon le germe :</p>
+                                <ul class="small">
+                                    <li><span class="strong">Trichomonas vaginalis</span> : Tinidazole 500 mg ou Secnidazole 500 mg, 4 cp en prise unique orale.</li>
+                                    <li><span class="strong">Clue-cells</span> : Tinidazole 500 mg ou Secnidazole 500 mg, 4 cp en prise unique orale.</li>
+                                    <li><span class="strong">Gonocoques</span> : Spectinomycine 1 g IM : 2 g en IM.</li>
+                                    <li><span class="strong">Cellules à inclusion</span> : Azithromycine 500 mg, 2 cp/j en prise unique x3j orale.</li>
+                                    <li><span class="strong">Pas de gonocoque / cellule à inclusion</span> : Azithromycine 500 mg, 2 cp/j en prise unique x3j orale.</li>
+                                </ul>
+                                <p class="small">Revoir 3 jours après la fin du traitement. Traiter les partenaires.</p>
+                                <div class="warning">⚠️ Échec malgré bonne observance → référer au niveau IST3.</div>
+                            </div>
+                            <div class="note">Enfant &lt;15 ans : Ceftriaxone 50 mg/kg (max 250 mg) IM + Érythromycine 50 mg/kg/j x7j. Échec : Métronidazole 50 mg/kg/j + Érythromycine 50 mg/kg/j x14j. 2ème échec : IST3.</div>
+                        </div>`;
+                }
+                if (syndrome === 'ulceration') {
+                    if (niveau === '1') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-homme">🦠</span> Ulcération génitale / ano-rectale / bubon — Homme</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1</h3>
+                                <p class="small">Traiter pour chancre mou, chancre syphilitique et herpès génital.</p>
+                                <div class="kit">Kit ULGEN</div>
+                                <ul class="small">
+                                    <li><span class="strong">Ceftriaxone</span> 500 mg : 1 amp IM dans une fesse</li>
+                                    <li><span class="strong">Benzathine Benzylpénicilline</span> 2,4 MUI : 1 amp IM dans l'autre fesse</li>
+                                </ul>
+                                <p class="small">Éosine aqueuse 2% matin et soir (hors kit). Revoir au 10ème jour. Traiter les partenaires.</p>
+                                <div class="warning">⚠️ Observer 30 min après injection (choc anaphylactique). Un bubon ne doit pas être incisé. Un bubon isolé se traite par ULGEN.</div>
+                            </div>
+                            <div class="note">Enfant &lt;15 ans : adapter la dose au poids/âge.</div>
+                        </div>`;
+                    if (niveau === '1med') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-homme">🦠</span> Ulcération génitale / ano-rectale / bubon — Homme</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1 avec compétence médicale</h3>
+                                <p class="small">Rechercher : chancre mou, chancre syphilitique, herpès génital, gale ulcérée.</p>
+                                <ul class="small">
+                                    <li><span class="strong">Gale</span> : Antiscabieux solution + Antiparasitaire poudre.</li>
+                                    <li><span class="strong">Herpès primo-infection</span> : Acyclovir 200 mg, 1 cp x5/j x10j + Éosine aqueuse 2% x2/j jusqu'à cicatrisation.</li>
+                                    <li><span class="strong">Herpès récidive &lt;6/an</span> : Acyclovir 200 mg, 1 cp x5/j x5j + Éosine aqueuse 2%.</li>
+                                    <li><span class="strong">Herpès récidive ≥6/an</span> : Acyclovir 200 mg, 1 cp x5/j x5j, espacé de 25 j chaque mois pendant 6 mois + Éosine aqueuse 2%.</li>
+                                    <li><span class="strong">Absence des 2 pathologies</span> : Éosine aqueuse 2% puis référer au niveau IST3.</li>
+                                </ul>
+                                <p class="small">Revoir au 10ème jour. Si persistance : référer au niveau IST3.</p>
+                                <div class="warning">⚠️ Observer 30 min après Benzathine Benzylpénicilline. Traiter les partenaires.</div>
+                            </div>
+                        </div>`;
+                    if (niveau === '2') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-homme">🦠</span> Ulcération génitale / ano-rectale / bubon — Homme</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST2</h3>
+                                <ul class="small">
+                                    <li><span class="strong">Gale</span> : Antiscabieux solution + Antiparasitaire poudre.</li>
+                                    <li><span class="strong">Herpès génital</span> : Éosine aqueuse 2% x2/j. Récidive : Acyclovir 800 mg 1 cp x2/j x5j VO ou Valacyclovir 500 mg 2 cp/j x5j VO ou Acyclovir crème x5/j x5j.</li>
+                                    <li><span class="strong">Microscope à fond noir positif</span> : Benzathine Benzylpénicilline 2,4 MUI, 1 amp IM/semaine x2 semaines.</li>
+                                    <li><span class="strong">Microscope à fond noir négatif</span> : référer au niveau IST3.</li>
+                                </ul>
+                                <p class="small">Revoir au 10ème jour. Persistance : référer IST3.</p>
+                                <div class="warning">⚠️ Demander sérologie VIH. VIH+ : prolonger Acyclovir/Valacyclovir à 10 jours. Client neuf : kit ULGEN. Traiter les partenaires.</div>
+                            </div>
+                        </div>`;
+                }
+                if (syndrome === 'douleur_test') {
+                    if (niveau === '1') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-homme">🥜</span> Douleurs testiculaires — Homme</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1</h3>
+                                <p class="small">Référer le client au niveau IST1 avec compétence médicale ou au niveau IST2.</p>
+                                <p class="small">Rassurer, éduquer, proposer dépistage VIH/VHB/VHC/HPV, promouvoir le préservatif.</p>
+                                <div class="warning">⚠️ Éliminer une urgence chirurgicale : torsion testiculaire (douleur brutale et aggravation rapide chez l'homme jeune).</div>
+                            </div>
+                        </div>`;
+                    if (niveau === '1med') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-homme">🥜</span> Douleurs testiculaires — Homme</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1 avec compétence médicale</h3>
+                                <p class="small">Éliminer une torsion testiculaire (urgence chirurgicale).</p>
+                                <div class="kit">Prescription</div>
+                                <ul class="small">
+                                    <li><span class="strong">Ceftriaxone</span> 500 mg : 1 amp/j IM x3j</li>
+                                    <li><span class="strong">Azithromycine</span> 500 mg : 2 cp en prise unique orale x3j</li>
+                                </ul>
+                                <p class="small">Revoir au 10ème jour. Traiter le/la partenaire.</p>
+                                <div class="warning">⚠️ Persistance malgré bonne observance → référer au niveau IST3.</div>
+                            </div>
+                        </div>`;
+                    if (niveau === '2') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-homme">🥜</span> Douleurs testiculaires — Homme</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST2</h3>
+                                <p class="small">Éliminer une urgence chirurgicale. Grattage urétral pour Gram et Giemsa.</p>
+                                <ul class="small">
+                                    <li><span class="strong">Gonocoque</span> : Ceftriaxone 500 mg IM 1 injection/j x3j. Revoir au 10ème jour.</li>
+                                    <li><span class="strong">Cellules à inclusion</span> : Azithromycine 500 mg 2 cp/j x3j VO. Revoir au 14ème jour.</li>
+                                    <li><span class="strong">PN &gt; 5/champ et/ou germe spécifique</span> : référer au niveau IST3.</li>
+                                </ul>
+                                <div class="warning">⚠️ Persistance malgré bonne observance → référer au niveau IST3.</div>
+                            </div>
+                        </div>`;
+                }
+                if (syndrome === 'condylomes') {
+                    if (niveau === '1') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-homme">🍄</span> Condylomes acuminés — Homme</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1</h3>
+                                <p class="small">Petite taille et peu nombreux :</p>
+                                <div class="kit">Kératolytique</div>
+                                <ul class="small">
+                                    <li>Acide salicylique 12,5%</li>
+                                    <li>Acide salicylique 12,5% + acide lactique</li>
+                                    <li>5-Fluoro-uracile + acide salicylique</li>
+                                </ul>
+                                <p class="small">Application locale matin et soir jusqu'à guérison. Revoir au 10ème jour.</p>
+                                <p class="small">Si persistance ou lésions plus étendues : référer au niveau IST1 avec compétence médicale ou IST2.</p>
+                                <div class="warning">⚠️ Utilisation de gants. Dépistage des partenaires. Visite mensuelle de suivi jusqu'à 6 mois après guérison.</div>
+                            </div>
+                            <div class="note">Enfant &lt;15 ans : traitement idem que chez l'adulte.</div>
+                        </div>`;
+                    if (niveau === '1med' || niveau === '2') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-homme">🍄</span> Condylomes acuminés — Homme</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1 avec compétence médicale / Niveau IST2</h3>
+                                <ul class="small">
+                                    <li><span class="strong">Petite taille et peu nombreux</span> : Kératolytique (Acide salicylique 12,5%, Acide salicylique 12,5% + acide lactique, 5-Fluoro-uracile + acide salicylique) application locale matin et soir jusqu'à guérison.</li>
+                                    <li><span class="strong">Taille moyenne (2-5 cm)</span> : Duofilm.</li>
+                                    <li><span class="strong">Grande taille (&gt;5 cm)</span> : Chirurgie ou électrocoagulation.</li>
+                                </ul>
+                                <div class="warning">⚠️ Podophyllotoxine contre-indiquée chez la femme enceinte. Gants. Dépistage des partenaires. Suivi mensuel jusqu'à 6 mois après guérison.</div>
+                            </div>
+                            <div class="note">Enfant &lt;15 ans : traitement idem que chez l'adulte.</div>
+                        </div>`;
+                }
+            }
+
+            // ================== FEMME NON ENCEINTE ==================
+            if (sexe === 'femme' && grossesse === 'non') {
+                if (syndrome === 'ecoulement_f_non') {
+                    if (niveau === '1') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-femme">💧</span> Écoulement vaginal et/ou ano-rectal — Femme non enceinte</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1 — Évaluation par score</h3>
+                                <p class="small"><span class="strong">Facteurs majeurs (2 pts chacun)</span> : douleurs pelviennes/dyspareunie, signes cliniques chez le partenaire.<br>
+                                <span class="strong">Facteurs mineurs (1 pt chacun)</span> : âge &lt;25 ans, célibataire, &gt;1 partenaire les 3 derniers mois.</p>
+                                <p class="small">Score ≥ 2 → orienter vers cervicite (kit LEUCO S). Score &lt; 2 → infection vaginale (kit LEUCO P).</p>
+                                <div class="kit">Kit LEUCO S (si score ≥ 2 — cervicite)</div>
+                                <ul class="small">
+                                    <li><span class="strong">Ceftriaxone</span> 500 mg IM : 1 injection</li>
+                                    <li><span class="strong">Azithromycine</span> 500 mg : 2 cp/j en une prise unique x3j orale</li>
+                                </ul>
+                                <p class="small">Revoir au 24ème jour. Traiter les partenaires.</p>
+                                <div class="kit" style="margin-top:1rem;">Kit LEUCO P (si score &lt; 2 — infection vaginale)</div>
+                                <ul class="small">
+                                    <li><span class="strong">Métronidazole</span> 500 mg : 4 cp en prise unique orale</li>
+                                    <li><span class="strong">Econazole</span> 150 mg ovule : 1 ovule/j le soir x6j</li>
+                                </ul>
+                                <p class="small">Revoir au 10ème jour. Traiter les partenaires.</p>
+                                <div class="warning">⚠️ Échec malgré bonne observance → référer au niveau IST1 avec compétence médicale ou IST2.</div>
+                            </div>
+                            <div class="note">Enfant &lt;15 ans : Ceftriaxone 50 mg/kg (max 250 mg) IM + Azithromycine 50 mg/kg/j. Échec : Métronidazole 50 mg/kg/j (1 prise) + Érythromycine 50 mg/kg/j x14j. 2ème échec : IST2/3.</div>
+                        </div>`;
+                    if (niveau === '1med') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-femme">💧</span> Écoulement vaginal et/ou ano-rectal — Femme non enceinte</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1 avec compétence médicale</h3>
+                                <p class="small">Examen au spéculum. Si douleur à la mobilisation du col, inflammation, mucopus cervical ou autre lésion :</p>
+                                <div class="kit">Kit LEUCO S (cervicite)</div>
+                                <ul class="small">
+                                    <li><span class="strong">Ceftriaxone</span> 500 mg IM : 1 injection</li>
+                                    <li><span class="strong">Azithromycine</span> 500 mg : 2 cp/j x3j orale</li>
+                                </ul>
+                                <p class="small">Revoir au 24ème jour. Traiter les partenaires.</p>
+                                <p class="small">Si pas de lésion cervicale : traiter gonococcie, chlamydiose, mycoplasmose, candidose, gardnerellose, trichomonose.</p>
+                                <div class="kit">Prescription complète</div>
+                                <ul class="small">
+                                    <li><span class="strong">Ceftriaxone</span> 500 mg IM J1</li>
+                                    <li><span class="strong">Azithromycine</span> 500 mg : 2 cp/j x3j à partir de J2</li>
+                                    <li><span class="strong">Econazole</span> 150 mg ovule : 1/j le soir x6j à partir de J1</li>
+                                    <li><span class="strong">Métronidazole</span> 500 mg : 4 cp en prise unique à partir de J2</li>
+                                </ul>
+                                <p class="small">Revoir au 10ème jour. Traiter les partenaires.</p>
+                                <div class="warning">⚠️ Échec → référer au niveau IST3 ou se comporter comme IST3 (antibiogramme).</div>
+                            </div>
+                        </div>`;
+                    if (niveau === '2') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-femme">💧</span> Écoulement vaginal et/ou ano-rectal — Femme non enceinte</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST2 — Traitement selon germe</h3>
+                                <ul class="small">
+                                    <li><span class="strong">Trichomonas vaginalis</span> : Tinidazole 500 mg ou Secnidazole 500 mg, 4 cp en prise unique orale.</li>
+                                    <li><span class="strong">Clue-cells</span> : Tinidazole 500 mg ou Secnidazole 500 mg, 4 cp en prise unique orale.</li>
+                                    <li><span class="strong">Candida</span> : Amphotéricine B 1 cp gynécologique x2/j x6j.</li>
+                                    <li><span class="strong">Gonocoques</span> : Spectinomycine 1 g IM : 2 g en IM.</li>
+                                    <li><span class="strong">Cellules à inclusion</span> : Azithromycine 500 mg, 2 cp/j en prise unique x3j orale.</li>
+                                    <li><span class="strong">Pas de gonocoque / cellule à inclusion</span> : Azithromycine 500 mg, 2 cp/j x3j orale.</li>
+                                </ul>
+                                <p class="small">Revoir 7 jours après la fin du traitement. Traiter les partenaires.</p>
+                                <div class="warning">⚠️ Échec malgré bonne observance → référer au niveau IST3 ou se comporter comme IST3 (antibiogramme).</div>
+                            </div>
+                        </div>`;
+                }
+                if (syndrome === 'ulceration') {
+                    if (niveau === '1') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-femme">🦠</span> Ulcération génitale / ano-rectale / bubon — Femme</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1</h3>
+                                <p class="small">Traiter pour chancre mou, chancre syphilitique et herpès génital.</p>
+                                <div class="kit">Kit ULGEN</div>
+                                <ul class="small">
+                                    <li><span class="strong">Ceftriaxone</span> 500 mg IM dans une fesse</li>
+                                    <li><span class="strong">Benzathine Benzylpénicilline</span> 2,4 MUI IM dans l'autre fesse</li>
+                                </ul>
+                                <p class="small">Éosine aqueuse 2% matin et soir (hors kit). Revoir au 10ème jour. Traiter les partenaires.</p>
+                                <div class="warning">⚠️ Observer 30 min après injection (choc anaphylactique). Un bubon ne doit pas être incisé. Prise en charge identique chez la femme enceinte/allaitante.</div>
+                            </div>
+                            <div class="note">Enfant &lt;15 ans : adapter la dose au poids/âge.</div>
+                        </div>`;
+                    if (niveau === '1med') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-femme">🦠</span> Ulcération génitale / ano-rectale / bubon — Femme</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1 avec compétence médicale</h3>
+                                <p class="small">Rechercher : chancre mou, chancre syphilitique, herpès génital, gale ulcérée.</p>
+                                <ul class="small">
+                                    <li><span class="strong">Gale</span> : Antiscabieux solution + Antiparasitaire poudre.</li>
+                                    <li><span class="strong">Herpès primo-infection</span> : Acyclovir 200 mg, 1 cp x5/j x10j + Éosine aqueuse 2% x2/j.</li>
+                                    <li><span class="strong">Herpès récidive &lt;6/an</span> : Acyclovir 200 mg, 1 cp x5/j x5j + Éosine aqueuse 2%.</li>
+                                    <li><span class="strong">Herpès récidive ≥6/an</span> : Acyclovir 200 mg, 1 cp x5/j x5j, espacé de 25 j chaque mois pendant 6 mois + Éosine aqueuse 2%.</li>
+                                    <li><span class="strong">Absence des 2 pathologies</span> : Éosine aqueuse 2% puis référer au niveau IST3.</li>
+                                </ul>
+                                <p class="small">Revoir au 10ème jour. Si persistance : référer au niveau IST3.</p>
+                            </div>
+                        </div>`;
+                    if (niveau === '2') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-femme">🦠</span> Ulcération génitale / ano-rectale / bubon — Femme</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST2</h3>
+                                <ul class="small">
+                                    <li><span class="strong">Gale</span> : Antiscabieux solution + Antiparasitaire poudre.</li>
+                                    <li><span class="strong">Herpès génital</span> : Éosine aqueuse 2% x2/j. Récidive : Acyclovir 800 mg 1 cp x2/j x5j VO ou Valacyclovir 500 mg 2 cp/j x5j VO ou Acyclovir crème x5/j x5j.</li>
+                                    <li><span class="strong">Microscope à fond noir positif</span> : Benzathine Benzylpénicilline 2,4 MUI, 1 amp IM/semaine x2 semaines.</li>
+                                    <li><span class="strong">Microscope à fond noir négatif</span> : référer au niveau IST3.</li>
+                                </ul>
+                                <p class="small">Revoir au 10ème jour. Persistance : référer IST3.</p>
+                                <div class="warning">⚠️ Demander sérologie VIH. VIH+ : prolonger Acyclovir/Valacyclovir à 10 jours. Client neuf : kit ULGEN. Traiter les partenaires.</div>
+                            </div>
+                        </div>`;
+                }
+                if (syndrome === 'douleur_abdo') {
+                    if (niveau === '1') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-femme">🤰</span> Douleur abdominale basse — Femme non enceinte</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1</h3>
+                                <p class="small">Prescrire antispasmodique :</p>
+                                <ul class="small">
+                                    <li><span class="strong">N-butylhyoscine</span> (Buscopan) 2 cp, ou</li>
+                                    <li><span class="strong">Tiémonium</span> (Viscéralgine simple) 1 amp IM</li>
+                                </ul>
+                                <p class="small">Puis référer la cliente au niveau IST1 avec compétence médicale ou au niveau IST2.</p>
+                                <div class="warning">⚠️ Rechercher une urgence chirurgicale : GEU (saignement irrégulier, retard de règles, choc, masse annexielle), avortement à risque, péritonite (défense, contracture, syndrome infectieux).</div>
+                            </div>
+                        </div>`;
+                    if (niveau === '1med') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-femme">🤰</span> Douleur abdominale basse — Femme non enceinte</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1 avec compétence médicale</h3>
+                                <p class="small">Prendre la température. Éliminer une urgence chirurgicale.</p>
+                                <p class="small"><span class="strong">Si T° &gt; 38°C</span> : hospitaliser. Traiter gonococcie, chlamydiose et anaérobies.</p>
+                                <div class="kit">Kit SALPIN P1 (J1)</div>
+                                <ul class="small">
+                                    <li><span class="strong">Amoxicilline + Acide clavulanique</span> 2 g x2/j IM ou IV</li>
+                                    <li><span class="strong">Ceftriaxone</span> 1 g IM x2/j J1</li>
+                                </ul>
+                                <p class="small">Évaluer J2. Si persistance : 2ème kit SALPIN P1 puis évaluer J3. Traiter les partenaires.</p>
+                                <p class="small"><span class="strong">Si T° ≤ 38°C</span> : traiter chlamydiose et anaérobies.</p>
+                                <div class="kit">Kit SALPIN P2</div>
+                                <ul class="small">
+                                    <li><span class="strong">Azithromycine</span> 500 mg : 2 cp/j x3j orale</li>
+                                    <li><span class="strong">Kétoprofène</span> 100 mg suppo : 1 x2/j x10j</li>
+                                    <li><span class="strong">Métronidazole</span> 500 mg : 2 cp x2/j x5j</li>
+                                </ul>
+                                <p class="small">Revoir au 10ème jour. Traiter les partenaires.</p>
+                                <div class="warning">⚠️ Persistance malgré bonne observance → référer au niveau IST3.</div>
+                            </div>
+                        </div>`;
+                    if (niveau === '2') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-femme">🤰</span> Douleur abdominale basse — Femme non enceinte</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST2</h3>
+                                <p class="small">La prise en charge est la même qu'au niveau IST1 avec compétence médicale.</p>
+                                <div class="note">Voir protocole : température, élimination urgence chirurgicale, kit SALPIN P1 si fièvre, kit SALPIN P2 sinon.</div>
+                            </div>
+                        </div>`;
+                }
+                if (syndrome === 'condylomes') {
+                    if (niveau === '1') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-femme">🍄</span> Condylomes acuminés — Femme</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1</h3>
+                                <p class="small">Petite taille et peu nombreux : kératolytique en application locale matin et soir jusqu'à guérison.</p>
+                                <div class="kit">Kératolytique</div>
+                                <ul class="small">
+                                    <li>Acide salicylique 12,5%</li>
+                                    <li>Acide salicylique 12,5% + acide lactique</li>
+                                    <li>5-Fluoro-uracile + acide salicylique</li>
+                                </ul>
+                                <p class="small">Revoir au 10ème jour. Si persistance : référer au niveau IST1 avec compétence médicale ou IST2.</p>
+                                <div class="warning">⚠️ Podophyllotoxine contre-indiquée chez la femme enceinte. Gants. Dépistage des partenaires. Suivi mensuel jusqu'à 6 mois après guérison.</div>
+                            </div>
+                        </div>`;
+                    if (niveau === '1med' || niveau === '2') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-femme">🍄</span> Condylomes acuminés — Femme</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1 avec compétence médicale / Niveau IST2</h3>
+                                <ul class="small">
+                                    <li><span class="strong">Petite taille et peu nombreux</span> : kératolytique en application locale matin et soir jusqu'à guérison.</li>
+                                    <li><span class="strong">Taille moyenne (2-5 cm)</span> : Duofilm.</li>
+                                    <li><span class="strong">Grande taille (&gt;5 cm)</span> : Chirurgie ou électrocoagulation.</li>
+                                </ul>
+                                <div class="warning">⚠️ Podophyllotoxine contre-indiquée chez la femme enceinte. Gants. Dépistage des partenaires. Suivi mensuel jusqu'à 6 mois après guérison.</div>
+                            </div>
+                        </div>`;
+                }
+            }
+
+            // ================== FEMME ENCEINTE ==================
+            if (sexe === 'femme' && grossesse === 'oui') {
+                if (syndrome === 'ecoulement_f_oui') {
+                    if (niveau === '1') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-femme">💧</span> Écoulement vaginal et/ou ano-rectal — Femme enceinte</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1 — Évaluation par score</h3>
+                                <p class="small"><span class="strong">Score ≥ 2 (cervicite)</span> : kit LEUCOGE S.</p>
+                                <div class="kit">Kit LEUCOGE S</div>
+                                <ul class="small">
+                                    <li><span class="strong">Ceftriaxone</span> 500 mg IM : 1 injection</li>
+                                    <li><span class="strong">Azithromycine</span> 500 mg : 1 cp/j x3j à partir de J2</li>
+                                </ul>
+                                <p class="small">Revoir 2 jours après la fin du traitement. Traiter les partenaires.</p>
+                                <p class="small"><span class="strong">Score &lt; 2 (infection vaginale)</span> : kit LEUCOGE P.</p>
+                                <div class="kit">Kit LEUCOGE P</div>
+                                <ul class="small">
+                                    <li><span class="strong">Econazole</span> 150 mg ovule : 1 ovule/j le soir x6j</li>
+                                    <li><span class="strong">Métronidazole</span> 500 mg ovule : 1 ovule x2/j à partir de J7</li>
+                                </ul>
+                                <p class="small">+ Butoconazole crème : 1 application x2/j x21j. Revoir au 10ème jour.</p>
+                                <div class="warning">⚠️ Échec malgré bonne observance → référer au niveau IST1 avec compétence médicale ou IST2.</div>
+                            </div>
+                            <div class="note">Enfant &lt;15 ans : Ceftriaxone 50 mg/kg (max 250 mg) IM + Azithromycine 50 mg/kg/j x3j. Échec : Métronidazole 50 mg/kg/j + Érythromycine 50 mg/kg/j x7j. 2ème échec : IST2/3.</div>
+                        </div>`;
+                    if (niveau === '1med') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-femme">💧</span> Écoulement vaginal et/ou ano-rectal — Femme enceinte</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1 avec compétence médicale</h3>
+                                <p class="small">Examen au spéculum. Si col rouge / mucopus / autres lésions :</p>
+                                <div class="kit">Kit LEUCOGE S (cervicite)</div>
+                                <ul class="small">
+                                    <li><span class="strong">Ceftriaxone</span> 500 mg IM : 1 injection</li>
+                                    <li><span class="strong">Azithromycine</span> 500 mg : 1 cp/j x3j à partir de J2</li>
+                                </ul>
+                                <p class="small">Revoir au 25ème jour après début du traitement. Traiter les partenaires.</p>
+                                <p class="small">Si infection vaginale + cervicite : kit CERVIGE.</p>
+                                <div class="kit">Kit CERVIGE</div>
+                                <ul class="small">
+                                    <li><span class="strong">Ceftriaxone</span> 500 mg IM</li>
+                                    <li><span class="strong">Azithromycine</span> 500 mg : 2 cp en prise unique orale</li>
+                                    <li><span class="strong">Econazole</span> 150 mg ovule : 1/j le soir x6j</li>
+                                    <li><span class="strong">Métronidazole</span> 500 mg ovule : 1 ovule x2/j à partir de J7</li>
+                                </ul>
+                                <p class="small">+ Butoconazole crème 1 application x2/j x21j. Revoir au 10ème jour.</p>
+                                <p class="small">Si infection vaginale seule : kit LEUCOGE P (voir niveau IST1) + Butoconazole crème. Revoir au 15ème jour.</p>
+                                <div class="warning">⚠️ Échec → référer au niveau IST2 ou IST3.</div>
+                            </div>
+                        </div>`;
+                    if (niveau === '2') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-femme">💧</span> Écoulement vaginal et/ou ano-rectal — Femme enceinte</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST2 — Traitement selon germe</h3>
+                                <ul class="small">
+                                    <li><span class="strong">Trichomonas vaginalis</span> : Tinidazole 500 mg ou Secnidazole 500 mg, 4 cp en prise unique orale.</li>
+                                    <li><span class="strong">Clue-cells</span> : Tinidazole 500 mg ou Secnidazole 500 mg, 4 cp en prise unique orale.</li>
+                                    <li><span class="strong">Candida</span> : Econazole ovule 150 mg, 1 ovule/j le soir x6j.</li>
+                                    <li><span class="strong">Gonocoque</span> : Spectinomycine 1 g IM : 2 g en IM unique.</li>
+                                    <li><span class="strong">Cellules à inclusion</span> : Azithromycine 500 mg, 2 cp/j en prise unique x3j orale.</li>
+                                    <li><span class="strong">Pas de gonocoque / cellule à inclusion</span> : Azithromycine 500 mg, 2 cp/j x3j orale.</li>
+                                </ul>
+                                <p class="small">Revoir 3 jours après la fin du traitement. Traiter les partenaires.</p>
+                                <div class="warning">⚠️ Échec malgré bonne observance → référer au niveau IST3 ou se comporter comme IST3 (antibiogramme).</div>
+                            </div>
+                            <div class="note">Enfant &lt;15 ans : Ceftriaxone 50 mg/kg (max 250 mg) IM + Érythromycine 50 mg/kg/j x7j + Econazole ovule 150 mg x6j. Échec : Métronidazole ovule 500 mg x6j + Érythromycine 50 mg/kg/j x7j. 2ème échec : IST3.</div>
+                        </div>`;
+                }
+                if (syndrome === 'ulceration') {
+                    // Identique à femme non enceinte (prise en charge identique selon le guide)
+                    if (niveau === '1') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-femme">🦠</span> Ulcération génitale / ano-rectale / bubon — Femme enceinte</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1</h3>
+                                <p class="small">Prise en charge identique à la femme non enceinte.</p>
+                                <div class="kit">Kit ULGEN</div>
+                                <ul class="small">
+                                    <li><span class="strong">Ceftriaxone</span> 500 mg IM dans une fesse</li>
+                                    <li><span class="strong">Benzathine Benzylpénicilline</span> 2,4 MUI IM dans l'autre fesse</li>
+                                </ul>
+                                <p class="small">Éosine aqueuse 2% matin et soir. Revoir au 10ème jour. Traiter les partenaires.</p>
+                                <div class="warning">⚠️ Observer 30 min après injection. Un bubon ne doit pas être incisé.</div>
+                            </div>
+                        </div>`;
+                    if (niveau === '1med') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-femme">🦠</span> Ulcération génitale / ano-rectale / bubon — Femme enceinte</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1 avec compétence médicale</h3>
+                                <p class="small">Rechercher : chancre mou, chancre syphilitique, herpès génital, gale ulcérée. Prise en charge identique à la femme non enceinte.</p>
+                                <ul class="small">
+                                    <li><span class="strong">Gale</span> : Antiscabieux solution + Antiparasitaire poudre.</li>
+                                    <li><span class="strong">Herpès primo-infection</span> : Acyclovir 200 mg, 1 cp x5/j x10j + Éosine aqueuse 2%.</li>
+                                    <li><span class="strong">Herpès récidive &lt;6/an</span> : Acyclovir 200 mg, 1 cp x5/j x5j + Éosine aqueuse 2%.</li>
+                                    <li><span class="strong">Herpès récidive ≥6/an</span> : Acyclovir 200 mg, 1 cp x5/j x5j, espacé de 25 j chaque mois pendant 6 mois + Éosine aqueuse 2%.</li>
+                                </ul>
+                                <p class="small">Revoir au 10ème jour. Si persistance : référer au niveau IST3.</p>
+                            </div>
+                        </div>`;
+                    if (niveau === '2') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-femme">🦠</span> Ulcération génitale / ano-rectale / bubon — Femme enceinte</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST2</h3>
+                                <p class="small">Prise en charge identique à la femme non enceinte.</p>
+                                <ul class="small">
+                                    <li><span class="strong">Gale</span> : Antiscabieux solution + Antiparasitaire poudre.</li>
+                                    <li><span class="strong">Herpès génital</span> : Éosine aqueuse 2% x2/j. Récidive : Acyclovir 800 mg 1 cp x2/j x5j VO ou Valacyclovir 500 mg 2 cp/j x5j VO ou Acyclovir crème x5/j x5j.</li>
+                                    <li><span class="strong">Microscope à fond noir positif</span> : Benzathine Benzylpénicilline 2,4 MUI, 1 amp IM/semaine x2 semaines.</li>
+                                    <li><span class="strong">Microscope à fond noir négatif</span> : référer au niveau IST3.</li>
+                                </ul>
+                                <p class="small">Revoir au 10ème jour. Persistance : référer IST3.</p>
+                                <div class="warning">⚠️ Demander sérologie VIH. VIH+ : prolonger Acyclovir/Valacyclovir à 10 jours. Traiter les partenaires.</div>
+                            </div>
+                        </div>`;
+                }
+                if (syndrome === 'douleur_abdo') {
+                    // Le guide fournit l'algorithme "douleur abdominale basse chez la femme non enceinte"
+                    // Pour la femme enceinte, on applique la même logique de référence (urgence obstétricale)
+                    return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-femme">🤰</span> Douleur abdominale basse — Femme enceinte</div>
+                            <div class="result-card">
+                                <h3>🔹 Prise en charge</h3>
+                                <p class="small">Le guide national présente l'algorithme « Douleur abdominale basse chez la femme non enceinte ». Chez la femme enceinte, toute douleur abdominale basse doit faire éliminer en priorité une urgence obstétricale ou chirurgicale.</p>
+                                <div class="warning">⚠️ Éliminer une grossesse extra-utérine, une menace d'accouchement prématuré, une chorioamniotite, une appendicite, une pyélonéphrite. Référer en urgence au niveau IST2 ou IST3 / maternité.</div>
+                                <p class="small">En cas de signes infectieux : antibiothérapie adaptée après avis spécialisé. Ne pas retarder la référence.</p>
+                            </div>
+                        </div>`;
+                }
+                if (syndrome === 'condylomes') {
+                    if (niveau === '1') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-femme">🍄</span> Condylomes acuminés — Femme enceinte</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1</h3>
+                                <p class="small">Petite taille et peu nombreux : kératolytique en application locale matin et soir jusqu'à guérison.</p>
+                                <div class="kit">Kératolytique</div>
+                                <ul class="small">
+                                    <li>Acide salicylique 12,5%</li>
+                                    <li>Acide salicylique 12,5% + acide lactique</li>
+                                    <li>5-Fluoro-uracile + acide salicylique</li>
+                                </ul>
+                                <p class="small">Revoir au 10ème jour. Si persistance : référer au niveau IST1 avec compétence médicale ou IST2.</p>
+                                <div class="warning">⚠️ <strong>Podophyllotoxine contre-indiquée chez la femme enceinte.</strong> Gants. Dépistage des partenaires. Suivi mensuel jusqu'à 6 mois après guérison.</div>
+                            </div>
+                        </div>`;
+                    if (niveau === '1med' || niveau === '2') return `
+                        <div class="card">
+                            <div class="question-title"><span class="badge badge-femme">🍄</span> Condylomes acuminés — Femme enceinte</div>
+                            <div class="result-card">
+                                <h3>🔹 Niveau IST1 avec compétence médicale / Niveau IST2</h3>
+                                <ul class="small">
+                                    <li><span class="strong">Petite taille et peu nombreux</span> : kératolytique en application locale matin et soir jusqu'à guérison.</li>
+                                    <li><span class="strong">Taille moyenne (2-5 cm)</span> : Duofilm.</li>
+                                    <li><span class="strong">Grande taille (&gt;5 cm)</span> : Chirurgie ou électrocoagulation.</li>
+                                </ul>
+                                <div class="warning">⚠️ <strong>Podophyllotoxine contre-indiquée chez la femme enceinte.</strong> Gants. Dépistage des partenaires. Suivi mensuel jusqu'à 6 mois après guérison.</div>
+                            </div>
+                        </div>`;
+                }
+            }
+
+            return `<div class="card"><p>Combinaison non reconnue. Veuillez vérifier votre parcours.</p></div>`;
+        }
+
+        // Initialisation
+        showStep('sexe');
+    })();
+</script>
+</body>
+</html>
